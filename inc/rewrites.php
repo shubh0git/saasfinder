@@ -105,3 +105,38 @@ function saasfinder_flush_rewrites_on_activate() {
     flush_rewrite_rules();
 }
 add_action('after_switch_theme', 'saasfinder_flush_rewrites_on_activate');
+/**
+ * Fix Soft 404 Status for Programmatic Virtual Pages
+ * This forces a 200 Success status so Google indexes the pages.
+ */
+function saasfinder_fix_virtual_page_404() {
+    global $wp_query;
+
+    // Check if we are on ANY of our custom programmatic pages
+    if ( get_query_var('saas_compare_slug') || get_query_var('saas_alt_tool') || get_query_var('saas_hub_category') || get_query_var('saas_use_case') ) {
+        // Override the 404 flag and send a 200 OK header
+        $wp_query->is_404 = false;
+        status_header(200);
+    }
+}
+add_action('template_redirect', 'saasfinder_fix_virtual_page_404');
+
+/**
+ * Dynamically Generate Browser Tab / SEO Titles for Virtual Pages
+ */
+function saasfinder_virtual_page_titles( $title_parts ) {
+    // Fix title specifically for the /best/ category pages
+    if ( $hub_slug = get_query_var('saas_hub_category') ) {
+        $category_slug = preg_replace('/-software$/', '', $hub_slug);
+        $category = get_term_by('slug', $category_slug, 'saas-category');
+
+        if ( $category ) {
+            $title_parts['title'] = 'Best ' . $category->name . ' Software in ' . date('Y');
+        }
+    }
+
+    // Note: You can add additional if() statements here later to handle dynamic titles for your /compare/ and /alternatives/ pages!
+
+    return $title_parts;
+}
+add_filter('document_title_parts', 'saasfinder_virtual_page_titles');
