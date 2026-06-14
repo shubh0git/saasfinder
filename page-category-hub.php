@@ -81,6 +81,35 @@ foreach ($reviews as $r) {
 $free_tools = array_filter($reviews, function($r) {
     return get_post_meta($r->ID, '_saas_tool_free_plan', true) === 'yes';
 });
+
+// GEO FIX: Generate ItemList JSON-LD for the Programmatic Hub Page
+if ( ! empty( $reviews ) ) {
+    $schema_item_list = array(
+        '@context'        => 'https://schema.org',
+        '@type'           => 'ItemList',
+        'name'            => 'Best ' . single_term_title( '', false ) . ' Tools',
+        'itemListElement' => array()
+    );
+
+    $position = 1;
+    foreach ( $reviews as $tool ) {
+        $schema_item_list['itemListElement'][] = array(
+            '@type'    => 'ListItem',
+            'position' => $position,
+            'item'     => array(
+                '@type' => 'SoftwareApplication',
+                'name'  => get_the_title( $tool->ID ),
+                'url'   => get_permalink( $tool->ID )
+            )
+        );
+        $position++;
+    }
+
+    // Output the JSON-LD script securely
+    echo '<script type="application/ld+json">' . "\n";
+    echo wp_json_encode( $schema_item_list, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
+    echo "\n" . '</script>' . "\n";
+}
 ?>
 
 <article class="hub-page">
