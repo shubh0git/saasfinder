@@ -97,9 +97,11 @@ if ( ! empty( $reviews ) ) {
             '@type'    => 'ListItem',
             'position' => $position,
             'item'     => array(
-                '@type' => 'SoftwareApplication',
-                'name'  => get_the_title( $tool->ID ),
-                'url'   => get_permalink( $tool->ID )
+                '@type'               => 'SoftwareApplication',
+                'name'                => get_the_title( $tool->ID ),
+                'url'                 => get_permalink( $tool->ID ),
+                'applicationCategory' => 'BusinessApplication',
+                'operatingSystem'     => 'Web'
             )
         );
         $position++;
