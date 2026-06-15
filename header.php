@@ -82,10 +82,14 @@ function saasfinder_render_breadcrumbs() {
         echo '<li><span class="breadcrumbs__separator">/</span></li>';
         echo '<li aria-current="page">' . esc_html(get_the_title()) . '</li>';
     } elseif (is_singular('post')) {
+    $categories = get_the_category();
+    if (!empty($categories)) {
+        $cat = $categories[0];
         echo '<li><span class="breadcrumbs__separator">/</span></li>';
-        echo '<li><a href="' . esc_url(get_permalink(get_option('page_for_posts'))) . '">Blog</a></li>';
-        echo '<li><span class="breadcrumbs__separator">/</span></li>';
-        echo '<li aria-current="page">' . esc_html(get_the_title()) . '</li>';
+        echo '<li><a href="' . esc_url(get_category_link($cat->term_id)) . '">' . esc_html($cat->name) . '</a></li>';
+    }
+    echo '<li><span class="breadcrumbs__separator">/</span></li>';
+    echo '<li aria-current="page">' . esc_html(get_the_title()) . '</li>';
     } elseif (is_singular('saas-deal')) {
         echo '<li><span class="breadcrumbs__separator">/</span></li>';
         echo '<li><a href="' . esc_url(get_post_type_archive_link('saas-deal')) . '">Deals</a></li>';
