@@ -94,10 +94,10 @@ function saasfinder_render_breadcrumbs() {
         echo '<li><span class="breadcrumbs__separator">/</span></li>';
         echo '<li><a href="' . esc_url(get_post_type_archive_link('saas-deal')) . '">Deals</a></li>';
         echo '<li><span class="breadcrumbs__separator">/</span></li>';
-        echo '<li aria-current="page">' . wp_kses_post(get_the_archive_title()) . '</li>';
+        echo '<li aria-current="page">' . esc_html(get_the_title()) . '</li>';
     } elseif (is_archive()) {
         echo '<li><span class="breadcrumbs__separator">/</span></li>';
-        echo '<li aria-current="page">' . esc_html(get_the_archive_title()) . '</li>';
+        echo '<li aria-current="page">' . esc_html(single_term_title('', false)) . '</li>';
     }
 
     echo '</ol></div></nav>';
